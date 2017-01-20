@@ -1,0 +1,18 @@
+# Dummy file to demonstrate making these usable in other groups
+
+[web]
+testyaa46.miniserver.com
+testyaa61.miniserver.com
+
+[mariadb]
+testyaa21.miniserver.com
+testyaa49.miniserver.com
+
+[memset-linux]
+[memset-windows]
+[memset-dunsfold]
+[memset-reading]
+
+[all-linux:children]
+home
+memset-linux
