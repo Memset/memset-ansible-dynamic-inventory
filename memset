@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+'''
+Replace your /etc/ansible/hosts (/usr/local/etc/ansible/hosts) file with this,
+to automatically import all your Memset servers into the Ansible inventory.
+
+Alternatively, convert /etc/ansible/hosts to a folder - this allows you to
+create local inventory files as well, importing all on each run.
+
+This creates the Ansible host groups:
+
+[memset-linux], [memset-windows], [memset-reading], [memset-dunsfold]
+
+MEMSET_KEY must be exported before running:
+
+export MEMSET_KEY=XXXXXX
+ansible memset-linux -m ping
+ansible memset-reading -l memset-linux -m ping
+
+API key must have access to at least:
+method:server.list, method:server.info & method:service.info
+'''
+from jsonrpclib import Server
+from pprint import pprint
+import os
+import sys
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+try:
+    memkey = os.environ['MEMSET_KEY']
+except KeyError, e:
+    sys.stderr.write('Unable to locate Memset credentials in environment!')
+    sys.stderr.flush()
+    exit(1)
+
+uri = "https://%s:@api.memset.com/v1/jsonrpc/" % memkey
+
+s = Server(uri)
+
+def _get_servers():
+    return s.server.list()
+
+def _get_service(name):
+    return s.service.info(name=name)
+
+def _simple_os(server):
+    return 'windows' if server["os"].startswith("win") else 'linux'
+
+def _get_zone(service):
+    return service['network_zones'][0]
+
+def _build_vars(server):
+    var = {}
+    service = _get_service(server["name"])
+    nickname = service["nickname"]
+    var["memset_nickname"] = nickname if nickname != "" else ''
+    var["memset_start_date"] = service["start_date"]
+    var["memset_network_zone"] = service["network_zones"][0]
+    var["memset_os"] = server["os"]
+    var["memset_type"] = service["type"]
+    return var
+
+
+def main():
+    osses = {}
+    osses["windows"] = []
+    osses["linux"] = []
+    output = {
+                'memset-windows' : {'hosts' : [], 'vars': {}},
+                'memset-linux' : {'hosts' : [], 'vars': {}},
+                'memset-reading' : {'hosts' : [], 'vars': {}},
+                'memset-dunsfold' : {'hosts' : [], 'vars': {}},
+                '_meta' : {'hostvars': {}}
+             }
+    for server in _get_servers():
+        os_group = 'memset-%s' % _simple_os(server)
+        zone_group = 'memset-%s' % _get_zone(server)
+        hn = server['host_name']
+        output[os_group]['hosts'].append(hn)
+        output[zone_group]['hosts'].append(hn)
+        output['_meta']['hostvars'][hn] = _build_vars(server)
+
+
+    output['memset-linux']['vars']["ansible_ssh_user"] = 'root'
+    print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
+
+if __name__ == '__main__':
+    main()
