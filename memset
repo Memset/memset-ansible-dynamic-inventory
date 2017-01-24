@@ -22,6 +22,7 @@ method:server.list, method:server.info & method:service.info
 from jsonrpclib import Server
 import os
 import sys
+import getopt
 
 try:
     import json
@@ -62,8 +63,15 @@ def _build_vars(server):
     var["memset_type"] = service["type"]
     return var
 
+def get_single(hostname):
+    servers = _get_servers()
+    server = filter(lambda s: s["host_name"] == hostname, servers)
+    output = {}
+    if len(server) == 1:
+        output = _build_vars(server[0])
+    return output
 
-def main():
+def get_all():
     osses = {}
     osses["windows"] = []
     osses["linux"] = []
@@ -84,6 +92,20 @@ def main():
 
 
     output['memset-linux']['vars']["ansible_ssh_user"] = 'root'
+    return output
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "", ["list", "host="])
+    except getopt.GetoptError as err:
+        print str(err)
+        sys.exit(2)
+    output = {}
+    for o, a in opts:
+        if o == "--list":
+            output = get_all()
+        elif o == "--host":
+            output = get_single(a)
     print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
 
 if __name__ == '__main__':
