@@ -20,7 +20,6 @@ API key must have access to at least:
 method:server.list, method:server.info & method:service.info
 '''
 from jsonrpclib import Server
-from pprint import pprint
 import os
 import sys
 
