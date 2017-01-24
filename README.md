@@ -8,9 +8,9 @@ If you already have a `/etc/ansible/hosts` file, rename this to `/etc/ansible/ho
 
 Create a folder in its place: `/etc/ansible/hosts`.
 
-Clone or download this repository to `/etc/ansible/hosts`, ensuring that `/etc/ansible/hosts/memset` is executable.
+Clone or download this repository to your local machine, and move `memset` to `/etc/ansible/hosts`, ensuring that it is executable.
 
-You can merge the backup (`/etc/ansible/hosts-local`) with the file `hosts-local` in this repository.
+You can merge the backup (`/etc/ansible/hosts-local`) with the file `hosts-local` in this repository, to mix dynamic and static groups.
 
 ## Usage
 
@@ -32,3 +32,24 @@ ansible memset-reading -l memset-linux -m ping
 ## API Key Requirements
 API key must have access to at least:
 `method:server.list`, `method:server.info` & `method:service.info`
+
+## License
+
+This is free software under the terms of MIT the license (check the COPYING file included in this repository).
+
+## Contact and support
+
+The project website is at:
+
+  * https://github.com/memset/memset-ansible-dynamic-inventory
+
+There you can file bug reports, ask for help or send pull requests.
+
+## Authors
+
+  * Tom Whitwell <tom.whitwell@memset.com>
+
+Contributors
+------------
+
+  * Your name goes here!
