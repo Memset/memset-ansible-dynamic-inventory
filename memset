@@ -55,12 +55,30 @@ def _get_zone(service):
 def _build_vars(server):
     var = {}
     service = _get_service(server["name"])
-    nickname = service["nickname"]
-    var["memset_nickname"] = nickname if nickname != "" else ''
+    var["memset_nickname"] = service["nickname"]
     var["memset_start_date"] = service["start_date"]
+    var["memset_expiry_date"] = service["expiry_date"]
     var["memset_network_zone"] = service["network_zones"][0]
-    var["memset_os"] = server["os"]
+    var["memset_data_zone"] = service["data_zone"]
+    var["memset_renewal_price_amount"] = service["renewal_price_amount"]
+    var["memset_renewal_price_currency"] = service["renewal_price_currency"]
+    var["memset_renewal_price_vat"] = service["renewal_price_vat"]
     var["memset_type"] = service["type"]
+    var["memset_os"] = server["os"]
+    var["memset_backups"] = server["backups"]
+    var["memset_control_panel"] = server["control_panel"]
+    var["memset_firewall_type"] = server["firewall_type"]
+    var["memset_firewall_rule_group_name"] = server["firewall_rule_group"]["name"] if server["firewall_type"] != 'none' else ''
+    var["memset_firewall_rule_group_nickname"] = server["firewall_rule_group"]["nickname"] if server["firewall_type"] != 'none' else ''
+    var["memset_monitoring_level"] = server["monitoring_level"]
+    var["memset_monitor"] = server["monitor"]
+    var["memset_ignore_monitoring_off"] = server["ignore_monitoring_off"]
+    var["memset_no_auto_reboot"] = server["no_auto_reboot"]
+    var["memset_support_level"] = server["support_level"]
+    var["memset_vulnscan"] = server["vulnscan"]
+    var["memset_penetration_patrol"] = server["penetration_patrol"]
+    var["memset_penetration_patrol_alert_level"] = server["penetration_patrol_alert_level"]
+
     return var
 
 def get_single(hostname):
@@ -89,7 +107,6 @@ def get_all():
         output[os_group]['hosts'].append(hn)
         output[zone_group]['hosts'].append(hn)
         output['_meta']['hostvars'][hn] = _build_vars(server)
-
 
     output['memset-linux']['vars']["ansible_ssh_user"] = 'root'
     return output

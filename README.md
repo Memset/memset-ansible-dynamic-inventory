@@ -18,6 +18,8 @@ This creates the Ansible host groups:
 
 [memset-linux], [memset-windows], [memset-reading], [memset-dunsfold]
 
+This also creates the Ansible variables, listed in [Docs/Variables.md](Docs/Variables.md)
+
 The variable MEMSET_KEY must be exported before running any ansible command:
 ```
 export MEMSET_KEY=XXXXXX
