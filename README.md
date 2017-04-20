@@ -20,9 +20,9 @@ This creates the Ansible host groups:
 
 This also creates the Ansible variables, listed in [Docs/Variables.md](Docs/Variables.md)
 
-The variable MEMSET_KEY must be exported before running any ansible command:
+The variable ANSIBLE_MEMSET_KEY must be exported before running any ansible command:
 ```
-export MEMSET_KEY=XXXXXX
+export ANSIBLE_MEMSET_KEY=XXXXXX
 ```
 
 You can now access your Memset hosts through ansible:

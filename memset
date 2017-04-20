@@ -10,9 +10,9 @@ This creates the Ansible host groups:
 
 [memset-linux], [memset-windows], [memset-reading], [memset-dunsfold]
 
-MEMSET_KEY must be exported before running:
+ANSIBLE_MEMSET_KEY must be exported before running:
 
-export MEMSET_KEY=XXXXXX
+export ANSIBLE_MEMSET_KEY=XXXXXX
 ansible memset-linux -m ping
 ansible memset-reading -l memset-linux -m ping
 
@@ -30,7 +30,7 @@ except ImportError:
     import simplejson as json
 
 try:
-    memkey = os.environ['MEMSET_KEY']
+    memkey = os.environ['ANSIBLE_MEMSET_KEY']
 except KeyError, e:
     sys.stderr.write('Unable to locate Memset credentials in environment!')
     sys.stderr.flush()
